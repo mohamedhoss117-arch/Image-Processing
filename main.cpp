@@ -93,6 +93,7 @@ public:
                 for (int c = 0; c < channels; c++)
                 {
 
+
                     file >> data[y][x][c];
                 }
             }
@@ -111,7 +112,6 @@ public:
             cerr << "Error: Could not create file " << filename << endl;
             return false;
         }
-
 
         file << "P3\n" << width << " " << height << "\n" << maxVal << "\n";
 
@@ -192,6 +192,7 @@ Image convertToGrayscale(const Image &input)
             output(y, x, 0) = gray;
         }
     }
+
     return output;
 }
 
@@ -219,6 +220,7 @@ Image flipHorizontal(const Image &input)
             }
         }
     }
+
     return output;
 }
 
@@ -240,12 +242,19 @@ Image flipVertical(const Image &input)
     int channels = input.getChannels();
     Image output(width, height, channels);
 
-    // TODO: Implement this function
-    // For each pixel and each channel:
-    //   output(height-1-y, x, c) = input(y, x, c)
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int c = 0; c < channels; c++) {
+
+                output(height - 1 - y, x, c) = input(y, x, c);
+            }
+        }
+    }
 
     return output;
 }
+
 
 /**
  * Adjusts image brightness
@@ -269,8 +278,30 @@ Image adjustBrightness(const Image &input, int value)
     //   new_value = input(y, x, c) + value
     //   output(y, x, c) = max(0, min(255, new_value))
 
+
     return output;
 }
+Image adjustBrightness(const Image& input, int value) {
+    int height = input.getHeight();
+    int width = input.getWidth();
+    int channels = input.getChannels();
+    Image output(width, height, channels);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int c = 0; c < channels; c++) {
+                int new_value = input(y, x, c) + value;
+
+                if (new_value < 0) new_value = 0;
+                if (new_value > 255) new_value = 255;
+                output(y, x, c) = new_value;
+            }
+        }
+    }
+
+    return output;
+}
+
 
 /**
  * Adjusts image contrast
@@ -353,6 +384,7 @@ Image applyBlur(const Image &input)
     }
 
 
+
     return output;
 }
 
@@ -387,61 +419,29 @@ void createTestImage(const string &filename)
 
     // Create a simple 4x4 pattern
     // Row 0
-    img(0, 0, 0) = 255;
-    img(0, 0, 1) = 0;
-    img(0, 0, 2) = 0; // Red
-    img(0, 1, 0) = 0;
-    img(0, 1, 1) = 255;
-    img(0, 1, 2) = 0; // Green
-    img(0, 2, 0) = 0;
-    img(0, 2, 1) = 0;
-    img(0, 2, 2) = 255; // Blue
-    img(0, 3, 0) = 255;
-    img(0, 3, 1) = 255;
-    img(0, 3, 2) = 255; // White
+
+    img(0, 0, 0) = 255; img(0, 0, 1) = 0;   img(0, 0, 2) = 0;    // Red
+    img(0, 1, 0) = 0;   img(0, 1, 1) = 255; img(0, 1, 2) = 0;    // Green
+    img(0, 2, 0) = 0;   img(0, 2, 1) = 0;   img(0, 2, 2) = 255;  // Blue
+    img(0, 3, 0) = 255; img(0, 3, 1) = 255; img(0, 3, 2) = 255;  // White
 
     // Row 1
-    img(1, 0, 0) = 255;
-    img(1, 0, 1) = 255;
-    img(1, 0, 2) = 0; // Yellow
-    img(1, 1, 0) = 255;
-    img(1, 1, 1) = 0;
-    img(1, 1, 2) = 255; // Magenta
-    img(1, 2, 0) = 0;
-    img(1, 2, 1) = 255;
-    img(1, 2, 2) = 255; // Cyan
-    img(1, 3, 0) = 128;
-    img(1, 3, 1) = 128;
-    img(1, 3, 2) = 128; // Gray
+    img(1, 0, 0) = 255; img(1, 0, 1) = 255; img(1, 0, 2) = 0;    // Yellow
+    img(1, 1, 0) = 255; img(1, 1, 1) = 0;   img(1, 1, 2) = 255;  // Magenta
+    img(1, 2, 0) = 0;   img(1, 2, 1) = 255; img(1, 2, 2) = 255;  // Cyan
+    img(1, 3, 0) = 128; img(1, 3, 1) = 128; img(1, 3, 2) = 128;  // Gray
 
     // Row 2
-    img(2, 0, 0) = 255;
-    img(2, 0, 1) = 128;
-    img(2, 0, 2) = 0; // Orange
-    img(2, 1, 0) = 128;
-    img(2, 1, 1) = 255;
-    img(2, 1, 2) = 0; // Light Green
-    img(2, 2, 0) = 128;
-    img(2, 2, 1) = 0;
-    img(2, 2, 2) = 255; // Purple
-    img(2, 3, 0) = 255;
-    img(2, 3, 1) = 128;
-    img(2, 3, 2) = 128; // Pink
+    img(2, 0, 0) = 255; img(2, 0, 1) = 128; img(2, 0, 2) = 0;    // Orange
+    img(2, 1, 0) = 128; img(2, 1, 1) = 255; img(2, 1, 2) = 0;    // Light Green
+    img(2, 2, 0) = 128; img(2, 2, 1) = 0;   img(2, 2, 2) = 255;  // Purple
+    img(2, 3, 0) = 255; img(2, 3, 1) = 128; img(2, 3, 2) = 128;  // Pink
 
     // Row 3
-    img(3, 0, 0) = 128;
-    img(3, 0, 1) = 255;
-    img(3, 0, 2) = 128; // Light Green
-    img(3, 1, 0) = 128;
-    img(3, 1, 1) = 128;
-    img(3, 1, 2) = 255; // Light Blue
-    img(3, 2, 0) = 255;
-    img(3, 2, 1) = 255;
-    img(3, 2, 2) = 128; // Light Yellow
-    img(3, 3, 0) = 0;
-    img(3, 3, 1) = 0;
-    img(3, 3, 2) = 0; // Black
-
+    img(3, 0, 0) = 128; img(3, 0, 1) = 255; img(3, 0, 2) = 128;  // Light Green
+    img(3, 1, 0) = 128; img(3, 1, 1) = 128; img(3, 1, 2) = 255;  // Light Blue
+    img(3, 2, 0) = 255; img(3, 2, 1) = 255; img(3, 2, 2) = 128;  // Light Yellow
+    img(3, 3, 0) = 0;   img(3, 3, 1) = 0;   img(3, 3, 2) = 0;    // Black
 
     img.savePPM(filename);
     cout << "Created 4x4 test image: " << filename << endl;
@@ -468,8 +468,8 @@ int main()
     }
 
     cout << "\nImage loaded successfully. Dimensions: "
-         << input.getWidth() << "x" << input.getHeight() << "\n\n";
 
+              << input.getWidth() << "x" << input.getHeight() << "\n\n";
 
     // Apply various transformations
     cout << "Applying image transformations...\n";
