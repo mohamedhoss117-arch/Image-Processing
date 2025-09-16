@@ -40,8 +40,8 @@ public:
     int getChannels() const { return channels; }
 
     // Set number of channels
-    void setChannels(int ch)
-    {
+
+    void setChannels(int ch) {
         channels = ch;
         for (int y = 0; y < height; y++)
         {
@@ -58,8 +58,9 @@ public:
         return data[y][x][channel];
     }
 
-    const int &operator()(int y, int x, int channel) const
-    {
+
+    const int& operator()(int y, int x, int channel) const {
+
         return data[y][x][channel];
     }
 
@@ -91,6 +92,7 @@ public:
             {
                 for (int c = 0; c < channels; c++)
                 {
+
                     file >> data[y][x][c];
                 }
             }
@@ -110,16 +112,12 @@ public:
             return false;
         }
 
-        file << "P3\n"
-             << width << " " << height << "\n"
-             << maxVal << "\n";
 
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (channels == 1)
-                {
+        file << "P3\n" << width << " " << height << "\n" << maxVal << "\n";
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (channels == 1) {
                     // For grayscale images, write the same value for all three channels
                     int gray = data[y][x][0];
                     file << gray << " " << gray << " " << gray << " ";
@@ -180,12 +178,20 @@ Image convertToGrayscale(const Image &input)
     int width = input.getWidth();
     Image output(width, height, 1); // Single channel for grayscale
 
-    // TODO: Implement this function
+
     // For each pixel:
     //   Get R, G, B values from input image
     //   Calculate gray = 0.299*R + 0.587*G + 0.114*B
     //   Set output(y, x, 0) = gray
-
+    for (int y = 0; y < height; y++){
+        for (int x = 0; x < width; x++){
+            int R = input(y, x, 0);
+            int G = input(y, x, 1);
+            int B = input(y, x, 2);
+            int gray = static_cast<int>(0.299*R + 0.587*G + 0.114*B);
+            output(y, x, 0) = gray;
+        }
+    }
     return output;
 }
 
@@ -206,12 +212,16 @@ Image flipHorizontal(const Image &input)
     int channels = input.getChannels();
     Image output(width, height, channels);
 
-    // TODO: Implement this function
-    // For each pixel and each channel:
-    //   output(y, width-1-x, c) = input(y, x, c)
-
+    for (int y = 0; y < height; y++){
+        for (int x = 0; x < width; x++){
+            for (int c = 0; c < channels; c++){
+                output(y, width - 1 - x, c) = input(y, x, c);
+            }
+        }
+    }
     return output;
 }
+
 
 /**
  * Flips image vertically (top to bottom)
@@ -342,6 +352,7 @@ Image applyBlur(const Image &input)
         }
     }
 
+
     return output;
 }
 
@@ -431,6 +442,7 @@ void createTestImage(const string &filename)
     img(3, 3, 1) = 0;
     img(3, 3, 2) = 0; // Black
 
+
     img.savePPM(filename);
     cout << "Created 4x4 test image: " << filename << endl;
 
@@ -457,6 +469,7 @@ int main()
 
     cout << "\nImage loaded successfully. Dimensions: "
          << input.getWidth() << "x" << input.getHeight() << "\n\n";
+
 
     // Apply various transformations
     cout << "Applying image transformations...\n";
