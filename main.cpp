@@ -266,21 +266,7 @@ Image flipVertical(const Image &input)
  *    - Clamp the result between 0 and 255
  * 3. Return the adjusted image
  */
-Image adjustBrightness(const Image &input, int value)
-{
-    int height = input.getHeight();
-    int width = input.getWidth();
-    int channels = input.getChannels();
-    Image output(width, height, channels);
 
-    // TODO: Implement this function
-    // For each pixel and each channel:
-    //   new_value = input(y, x, c) + value
-    //   output(y, x, c) = max(0, min(255, new_value))
-
-
-    return output;
-}
 Image adjustBrightness(const Image& input, int value) {
     int height = input.getHeight();
     int width = input.getWidth();
