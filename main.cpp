@@ -8,14 +8,16 @@
 using namespace std;
 
 // Class to represent an image as a 3D matrix
-class Image {
+class Image
+{
 private:
     int width, height, maxVal, channels;
     vector<vector<vector<int>>> data; // [height][width][channel]
 
 public:
     // Default constructor
-    Image() {
+    Image()
+    {
         width = 0;
         height = 0;
         maxVal = 255;
@@ -23,7 +25,8 @@ public:
     }
 
     // Create blank image
-    Image(int w, int h, int ch = 3) {
+    Image(int w, int h, int ch = 3)
+    {
         width = w;
         height = h;
         maxVal = 255;
@@ -37,35 +40,44 @@ public:
     int getChannels() const { return channels; }
 
     // Set number of channels
+
     void setChannels(int ch) {
         channels = ch;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
                 data[y][x].resize(channels, 0);
             }
         }
     }
 
     // Pixel access
-    int& operator()(int y, int x, int channel) {
+    int &operator()(int y, int x, int channel)
+    {
         return data[y][x][channel];
     }
 
+
     const int& operator()(int y, int x, int channel) const {
+
         return data[y][x][channel];
     }
 
     // Load PPM image (P3 format)
-    bool loadPPM(const string& filename) {
+    bool loadPPM(const string &filename)
+    {
         ifstream file(filename);
-        if (!file.is_open()) {
+        if (!file.is_open())
+        {
             cerr << "Error: Could not open file " << filename << endl;
             return false;
         }
 
         string format;
         file >> format;
-        if (format != "P3") {
+        if (format != "P3")
+        {
             cerr << "Error: Only P3 PPM format is supported" << endl;
             return false;
         }
@@ -74,9 +86,14 @@ public:
         channels = 3;
         data.resize(height, vector<vector<int>>(width, vector<int>(channels, 0)));
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                for (int c = 0; c < channels; c++) {
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int c = 0; c < channels; c++)
+                {
+
+
                     file >> data[y][x][c];
                 }
             }
@@ -87,9 +104,11 @@ public:
     }
 
     // Save PPM image (P3 format)
-    bool savePPM(const string& filename) const {
+    bool savePPM(const string &filename) const
+    {
         ofstream file(filename);
-        if (!file.is_open()) {
+        if (!file.is_open())
+        {
             cerr << "Error: Could not create file " << filename << endl;
             return false;
         }
@@ -102,9 +121,12 @@ public:
                     // For grayscale images, write the same value for all three channels
                     int gray = data[y][x][0];
                     file << gray << " " << gray << " " << gray << " ";
-                } else {
+                }
+                else
+                {
                     // For color images, write all three channels
-                    for (int c = 0; c < 3; c++) {
+                    for (int c = 0; c < 3; c++)
+                    {
                         file << data[y][x][c] << " ";
                     }
                 }
@@ -117,14 +139,19 @@ public:
     }
 
     // Print image data to console (for small images)
-    void print() const {
+    void print() const
+    {
         cout << "Image " << width << "x" << height << " (" << channels << " channels):\n";
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
                 cout << "(";
-                for (int c = 0; c < channels; c++) {
+                for (int c = 0; c < channels; c++)
+                {
                     cout << data[y][x][c];
-                    if (c < channels - 1) cout << ",";
+                    if (c < channels - 1)
+                        cout << ",";
                 }
                 cout << ") ";
             }
@@ -145,16 +172,26 @@ public:
  *    - Set the grayscale value in the output image
  * 3. Return the grayscale image
  */
-Image convertToGrayscale(const Image& input) {
+Image convertToGrayscale(const Image &input)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     Image output(width, height, 1); // Single channel for grayscale
 
-    // TODO: Implement this function
+
     // For each pixel:
     //   Get R, G, B values from input image
     //   Calculate gray = 0.299*R + 0.587*G + 0.114*B
     //   Set output(y, x, 0) = gray
+    for (int y = 0; y < height; y++){
+        for (int x = 0; x < width; x++){
+            int R = input(y, x, 0);
+            int G = input(y, x, 1);
+            int B = input(y, x, 2);
+            int gray = static_cast<int>(0.299*R + 0.587*G + 0.114*B);
+            output(y, x, 0) = gray;
+        }
+    }
 
     return output;
 }
@@ -169,18 +206,24 @@ Image convertToGrayscale(const Image& input) {
  *    - To position (y, width - 1 - x) in the output
  * 3. Return the flipped image
  */
-Image flipHorizontal(const Image& input) {
+Image flipHorizontal(const Image &input)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
     Image output(width, height, channels);
 
-    // TODO: Implement this function
-    // For each pixel and each channel:
-    //   output(y, width-1-x, c) = input(y, x, c)
+    for (int y = 0; y < height; y++){
+        for (int x = 0; x < width; x++){
+            for (int c = 0; c < channels; c++){
+                output(y, width - 1 - x, c) = input(y, x, c);
+            }
+        }
+    }
 
     return output;
 }
+
 
 /**
  * Flips image vertically (top to bottom)
@@ -192,11 +235,13 @@ Image flipHorizontal(const Image& input) {
  *    - To position (height - 1 - y, x) in the output
  * 3. Return the flipped image
  */
-Image flipVertical(const Image& input) {
+Image flipVertical(const Image &input)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
     Image output(width, height, channels);
+
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -221,7 +266,8 @@ Image flipVertical(const Image& input) {
  *    - Clamp the result between 0 and 255
  * 3. Return the adjusted image
  */
-Image adjustBrightness(const Image& input, int value) {
+Image adjustBrightness(const Image &input, int value)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
@@ -231,6 +277,7 @@ Image adjustBrightness(const Image& input, int value) {
     // For each pixel and each channel:
     //   new_value = input(y, x, c) + value
     //   output(y, x, c) = max(0, min(255, new_value))
+
 
     return output;
 }
@@ -268,7 +315,8 @@ Image adjustBrightness(const Image& input, int value) {
  *    - Clamp the result between 0 and 255
  * 3. Return the adjusted image
  */
-Image adjustContrast(const Image& input, float factor) {
+Image adjustContrast(const Image &input, float factor)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
@@ -293,18 +341,49 @@ Image adjustContrast(const Image& input, float factor) {
  *        - Set the output pixel to this average value
  * 3. Return the blurred image
  */
-Image applyBlur(const Image& input) {
+Image applyBlur(const Image &input)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
     Image output(width, height, channels);
 
-    // TODO: Implement this function
-    // For each pixel (from y=1 to height-2, x=1 to width-2) and each channel:
-    //   sum = 0
-    //   For each neighbor (ky from -1 to 1, kx from -1 to 1):
-    //     sum += input(y+ky, x+kx, c)
-    //   output(y, x, c) = sum / 9
+    for (int y = 1; y < height - 1; y++)
+    {
+        for (int x = 1; x < width - 1; x++)
+        {
+            for (int c = 0; c < channels; c++)
+            {
+                int sum = 0;
+
+                for (int ky = -1; ky <= 1; ky++)
+                {
+                    for (int kx = -1; kx <= 1; kx++)
+                    {
+                        sum += input(y + ky, x + kx, c);
+                    }
+                }
+
+                output(y, x, c) = sum / 9;
+            }
+        }
+    }
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            if (y == 0 || y == height - 1 || x == 0 || x == width - 1)
+            {
+                for (int c = 0; c < channels; c++)
+                {
+                    output(y, x, c) = input(y, x, c);
+                }
+            }
+        }
+    }
+
+
 
     return output;
 }
@@ -319,7 +398,8 @@ Image applyBlur(const Image& input) {
  *    - To position (x, height - 1 - y) in the output
  * 3. Return the rotated image
  */
-Image rotate90(const Image& input) {
+Image rotate90(const Image &input)
+{
     int height = input.getHeight();
     int width = input.getWidth();
     int channels = input.getChannels();
@@ -333,11 +413,13 @@ Image rotate90(const Image& input) {
 }
 
 // Creates a simple 4x4 test image with a pattern
-void createTestImage(const string& filename) {
+void createTestImage(const string &filename)
+{
     Image img(4, 4);
 
     // Create a simple 4x4 pattern
     // Row 0
+
     img(0, 0, 0) = 255; img(0, 0, 1) = 0;   img(0, 0, 2) = 0;    // Red
     img(0, 1, 0) = 0;   img(0, 1, 1) = 255; img(0, 1, 2) = 0;    // Green
     img(0, 2, 0) = 0;   img(0, 2, 1) = 0;   img(0, 2, 2) = 255;  // Blue
@@ -369,7 +451,8 @@ void createTestImage(const string& filename) {
     img.print();
 }
 
-int main() {
+int main()
+{
     cout << "Image Processing with Matrices - Student Project\n";
     cout << "================================================\n\n";
 
@@ -378,12 +461,14 @@ int main() {
 
     // Load the image
     Image input;
-    if (!input.loadPPM("test_image.ppm")) {
+    if (!input.loadPPM("test_image.ppm"))
+    {
         cerr << "Failed to load image. Exiting.\n";
         return 1;
     }
 
     cout << "\nImage loaded successfully. Dimensions: "
+
               << input.getWidth() << "x" << input.getHeight() << "\n\n";
 
     // Apply various transformations
