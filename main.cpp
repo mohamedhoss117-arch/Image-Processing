@@ -234,6 +234,27 @@ Image adjustBrightness(const Image& input, int value) {
 
     return output;
 }
+Image adjustBrightness(const Image& input, int value) {
+    int height = input.getHeight();
+    int width = input.getWidth();
+    int channels = input.getChannels();
+    Image output(width, height, channels);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int c = 0; c < channels; c++) {
+                int new_value = input(y, x, c) + value;
+
+                if (new_value < 0) new_value = 0;
+                if (new_value > 255) new_value = 255;
+                output(y, x, c) = new_value;
+            }
+        }
+    }
+
+    return output;
+}
+
 
 /**
  * Adjusts image contrast
